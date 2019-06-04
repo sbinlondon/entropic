@@ -1,0 +1,45 @@
+storageApi
+    getProviders()
+        [Provider]
+              Provider.redirect
+    getProvider(name)
+    getAuthentication({remoteId, provider})
+        Authentication
+              user: User
+    signup({username, email, remoteAuth: {token, id, provider}})
+        * NOTE: bring email uniqueness check into signup
+        * NOTE: err.code
+            - "signup.email_taken"
+            - "signup.username_taken"
+        User
+    getTokens({for: user, page: N})
+      [objects]
+    createToken({for: user, description})
+    deleteToken({for: user, valueHashes: [String]}) -> { count }
+    resolveCLISession({session, value})
+    fetchCLISession({session}) -> { description, value? }
+    createCLISession({description}) -> id String
+    getActiveMaintainers({namespace, host, name, page})
+
+    inviteMaintainer({namespace, host, name, from, to})
+        * NOTE: err.code
+            - invite.invitee_dne
+            - invite.package_dne
+            - invite.already_accepted
+            - invite.already_declined
+        - I think the invite logic might be incorrect around
+          maintainers.js L75, need to look into this.
+    removeMaintainer({namespace, host, name, from, to})
+        * NOTE: err.code
+            - invite.invitee_dne
+            - invite.package_dne
+            - invite.already_accepted
+            - invite.already_declined
+            - invite.invitee_not_maintainer (distinct from invitee_dne: namespace exists but is not a maintainer)
+    acceptMaintainerInvite({namespace, host, name, member, bearer})
+        * NOTE: err.code
+            - invite.invitee_dne
+            - invite.package_dne
+            - invite.already_accepted
+            - invite.already_declined
+            - invite.invitee_not_maintainer (distinct from invitee_dne: namespace exists but is not a maintainer)

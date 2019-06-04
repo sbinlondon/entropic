@@ -11,16 +11,11 @@ const SessionMap = require('../lib/session-map');
 
 function createSessionMW({
   sessionId = 's',
-  secret = process.env.SESSION_SECRET,
-  path = '/www'
+  secret = process.env.SESSION_SECRET
 } = {}) {
   return next => {
     const store = new RedisStore();
     return async context => {
-      if (!context.request.url.startsWith(path)) {
-        return next(context);
-      }
-
       const parsed = cookie.parse(context.request.headers.cookie || '');
       const id = parsed[sessionId];
       const exists = Boolean(id);
