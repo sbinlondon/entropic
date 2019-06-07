@@ -2,7 +2,7 @@
 
 module.exports = createStorageApi
 
-const StorageAPI = require('storage-api')
+const StorageAPI = require('storage-api-client')
 
 function createStorageApi ({
   url = process.env.STORAGE_API_URL || 'http://localhost:3002'

@@ -1,10 +1,8 @@
 'use strict'
 
 module.exports = class Client {
-  constructor ({ host = process.env.STORAGE_HOST, requestId }) {
-    this.host = host
+  constructor ({ url = process.env.STORAGE_API_URL, requestId }) {
+    this.url = url
     this.requestId = requestId
   }
-
-  
 }
