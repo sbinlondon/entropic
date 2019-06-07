@@ -1,49 +1,44 @@
 'use strict';
 
-const NamespaceMember = require('../models/namespace-member');
-const isLoggedIn = require('../decorators/is-logged-in');
-const Namespace = require('../models/namespace');
 const { response, fork } = require('boltzmann');
-const Package = require('../models/package');
-const User = require('../models/user');
+const authn = require('../decorators/authn');
 
 module.exports = [
   fork.get('/v1/namespaces', namespaces),
   fork.get('/v1/namespaces/namespace/:namespace([^@]+)@:host/members', members),
   fork.post(
     '/v1/namespaces/namespace/:namespace([^@]+)@:host/members/:invitee',
-    invite
+    authn.required(invite)
   ),
   fork.del(
     '/v1/namespaces/namespace/:namespace([^@]+)@:host/members/:invitee',
-    remove
+    authn.required(remove)
   ),
   fork.post(
     '/v1/namespaces/namespace/:namespace([^@]+)@:host/members/invitation',
-    accept
+    authn.required(accept)
   ),
   fork.del(
     '/v1/namespaces/namespace/:namespace([^@]+)@:host/members/invitation',
-    decline
+    authn.required(decline)
   ),
   // TODO: users need to be pulled into their own handler
   fork.get(
     '/v1/users/user/:user/memberships/pending',
-    pendingMemberships
+    authn.required(pendingMemberships)
   ),
-  fork.get('/v1/users/user/:user/memberships', memberships),
+  fork.get('/v1/users/user/:user/memberships', authn.required(memberships)),
   fork.get(
     '/v1/namespaces/namespace/:namespace([^@]+)@:host/memberships',
-    memberships
+    authn.required(memberships)
   ),
   fork.get(
     '/v1/namespaces/namespace/:namespace([^@]+)@:host/maintainerships/pending',
-    pendingMaintainerships
+    authn.required(pendingMaintainerships)
   ),
-  // probably belongs in the packages file, but whatever
   fork.get(
     '/v1/namespaces/namespace/:namespace([^@]+)@:host/maintainerships',
-    maintainerships
+    authn.required(maintainerships)
   )
 ];
 

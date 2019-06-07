@@ -112,7 +112,7 @@ async function versionCreate(context, { host, namespace, name, version }) {
     host,
     name,
     version,
-    context.request
+    request: context.request
   }).then(
     xs => [null, xs],
     xs => [xs, null]

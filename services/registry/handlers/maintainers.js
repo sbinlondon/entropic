@@ -1,13 +1,7 @@
 'use strict';
 
-const isNamespaceMember = require('../decorators/is-namespace-member');
-const packageExists = require('../decorators/package-exists');
-const findInvitee = require('../decorators/find-invitee');
-const canWrite = require('../decorators/can-write-package');
-const Maintainer = require('../models/maintainer');
-const Namespace = require('../models/namespace');
-const Package = require('../models/package');
 const { response, fork } = require('boltzmann');
+const authn = require('../decorators/authn')
 
 module.exports = [
   fork.get(
@@ -16,19 +10,19 @@ module.exports = [
   ),
   fork.post(
     '/v1/packages/package/:namespace([^@]+)@:host/:name/maintainers/:invitee',
-    findInvitee(canWrite(invite))
+    authn.required(invite)
   ),
   fork.del(
     '/v1/packages/package/:namespace([^@]+)@:host/:name/maintainers/:invitee',
-    findInvitee(canWrite(remove))
+    authn.required(remove)
   ),
   fork.post(
     '/v1/packages/package/:namespace([^@]+)@:host/:name/invitation/:member',
-    packageExists(isNamespaceMember(accept))
+    authn.required(accept)
   ),
   fork.del(
     '/v1/packages/package/:namespace([^@]+)@:host/:name/invitation/:member',
-    packageExists(isNamespaceMember(decline))
+    authn.required(decline)
   )
 ];
 
@@ -107,7 +101,7 @@ async function remove(context, { namespace, host, name, invitee }) {
   if (err) {
     const msg = {
       'maintainer.invite.invitee_dne': `Unknown namespace: "${invitee}".`,
-      'maintainer.invite.invitee_not_maintainer': `${invitee} was not a maintainer of ${namespace}@${host}/${name}.`
+      'maintainer.invite.invitee_not_maintainer': `${invitee} was not a maintainer of ${namespace}@${host}/${name}.`,
       'maintainer.invite.package_dne': `Unknown package: "${invitee}".`,
       'maintainer.invite.already_accepted': `Namespace "${invitee}" is already a member.`,
       'maintainer.invite.already_declined': `Namespace "${invitee}" has declined this invite.`
