@@ -5,7 +5,9 @@ const crypto = require('crypto')
 
 module.exports = createBearerAuthMW;
 
-function createBearerAuthMW({sessionTimeout} = {}) {
+function createBearerAuthMW({
+  sessionTimeout = Number(process.env.SESSION_TIMEOUT) || (5 * 60)
+} = {}) {
   return next => {
     return async context => {
       const bearer = context.request.headers['authorization']
