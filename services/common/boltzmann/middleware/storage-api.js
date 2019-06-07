@@ -11,7 +11,8 @@ function createStorageApi ({
     return async function (context) {
       context.storageApi = new StorageAPI({
         url,
-        requestId: context.id
+        requestId: context.id,
+        logger: context.logger('storage-api')
       })
 
       return next(context)

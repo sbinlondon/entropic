@@ -19,7 +19,7 @@ async function login(context) {
   })
   return response.json({
     doneUrl: `${process.env.EXTERNAL_HOST}/-/v1/login/poll/${id}`,
-    loginUrl: `${process.env.EXTERNAL_HOST}/www/login?cli=${id}`
+    loginUrl: `${process.env.WEB_HOST}/www/login?cli=${id}`
   });
 }
 

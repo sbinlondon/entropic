@@ -78,6 +78,12 @@ storageApi
             - member.invite.namespace_dne
             - member.invite.bearer_unauthorized
             - member.invite.invite_dne
+    declineNamespaceInvite({namespace, host, invitee, bearer})
+        * NOTE: err.code
+            - member.invite.invitee_dne
+            - member.invite.namespace_dne
+            - member.invite.bearer_unauthorized
+            - member.invite.invite_dne
     listMemberships({page, for, status: 'pending' | 'active', bearer})
     listMaintainerships({page, namespace, host, status: 'pending' | 'active', bearer})
     listPackages({page})

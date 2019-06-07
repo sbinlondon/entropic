@@ -9,7 +9,7 @@ const User = require('../models/user');
 
 module.exports = [
   fork.get('/v1/users/user/:username/memberships', memberships),
-  fork.get('/v1/users/token', byToken)
+  fork.get('/v1/users/tokens/token', byToken)
 ];
 
 async function memberships (context, { username }) {
