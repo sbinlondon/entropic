@@ -24,6 +24,7 @@ const myMiddles = [
   require('boltzmann/middleware/flush-request'),
   require('boltzmann/middleware/requestid'),
   require('boltzmann/middleware/redis'),
+  require('boltzmann/middleware/storage-api'),
   require('./middleware/bearer-auth'),
 ];
 

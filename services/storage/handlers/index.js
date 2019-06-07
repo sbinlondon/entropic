@@ -10,6 +10,7 @@ const pkg = require('../package.json');
 function makeRouter() {
   const router = fork.router()(
     fork.get('/', version),
+    ...require('./users'),
     ...require('./packages'),
     ...require('./maintainers'),
     ...require('./namespaces'),

@@ -1,6 +1,6 @@
 {
-  "name": "entropic-web",
-  "description": "community package manager but for spiders",
+  "name": "entropic-core",
+  "description": "the internal api of the community package manager",
   "version": "0.0.1",
   "author": "Chris Dickinson <chris@neversaw.us>",
   "bugs": {
@@ -63,11 +63,16 @@
     "url": "git://github.com/entopic-dev/entropic.git"
   },
   "scripts": {
-    "coverage": "NODE_ENV=test nyc mocha -R spec",
+    "coverage": "NODE_ENV=test PGUSER=postgres PGDATABASE=entropic_test nyc mocha -R spec",
+    "createdb": "createdbjs -h $PGHOST -U postgres entropic_${NODE_ENV:-dev} || true",
+    "dev": "NODE_ENV=dev PGUSER=postgres PGDATABASE=entropic_${NODE_ENV:-dev} ./server.js",
     "lint": "eslint .",
     "lint-fix": "prettier --write '**/*.js'",
+    "migrate": "PGUSER=postgres PGDATABASE=entropic_${NODE_ENV:-dev} db-migrate up --config db-migrate.json --env entropic",
     "posttest": "npm run lint",
-    "start": "./server.js",
-    "test": "mocha -R spec"
+    "prestart": "NODE_ENV=dev npm run createdb >/dev/null; NODE_ENV=dev npm run migrate",
+    "pretest": "NODE_ENV=test npm run createdb >/dev/null; NODE_ENV=test npm run migrate",
+    "start": "PGUSER=postgres PGDATABASE=entropic_${NODE_ENV:-dev} ./server.js",
+    "test": "NODE_ENV=test PGUSER=postgres PGDATABASE=entropic_test mocha -R spec"
   }
 }

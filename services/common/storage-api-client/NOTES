@@ -12,6 +12,8 @@ storageApi
             - "signup.email_taken"
             - "signup.username_taken"
         User
+    getToken(key) -> {user}
+        * NOTE: send the key in a header, not the path
     getTokens({for: user, page: N})     s listTokens()
       [objects]
     createToken({for: user, description})

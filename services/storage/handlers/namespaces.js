@@ -27,15 +27,6 @@ module.exports = [
     findNamespace(decline)
   ),
   fork.get(
-    '/v1/users/user/:namespace([^@]+)@:host/memberships/pending',
-    findUser(pendingMemberships)
-  ),
-  fork.get('/v1/users/user/:namespace([^@]+)@:host/memberships', memberships),
-  fork.get(
-    '/v1/namespaces/namespace/:namespace([^@]+)@:host/memberships',
-    memberships
-  ),
-  fork.get(
     '/v1/namespaces/namespace/:namespace([^@]+)@:host/maintainerships/pending',
     findNamespace(pendingMaintainerships)
   ),

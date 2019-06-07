@@ -7,7 +7,6 @@ const ship = require('culture-ships').random();
 const { response, fork } = require('boltzmann');
 const authn = require('../decorators/authn');
 const pkg = require('../package.json');
-const User = require('../models/user');
 const auth = require('./auth');
 
 function makeRouter() {
@@ -34,11 +33,6 @@ async function version() {
     website: 'https://www.entropic.dev'
   };
   return response.json(data);
-}
-
-async function greeting() {
-  const objects = await User.objects.all().then();
-  return response.json({ objects });
 }
 
 async function ping() {
