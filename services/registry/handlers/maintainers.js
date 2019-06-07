@@ -71,10 +71,10 @@ async function invite(context, { namespace, host, name, invitee }) {
 
   if (err) {
     const msg = {
-      'invite.invitee_dne': `Unknown namespace: "${invitee}".`,
-      'invite.package_dne': `Unknown package: "${invitee}".`,
-      'invite.already_accepted': `Namespace "${invitee}" is already a member.`,
-      'invite.already_declined': `Namespace "${invitee}" has declined this invite.`
+      'maintainer.invite.invitee_dne': `Unknown namespace: "${invitee}".`,
+      'maintainer.invite.package_dne': `Unknown package: "${invitee}".`,
+      'maintainer.invite.already_accepted': `Namespace "${invitee}" is already a member.`,
+      'maintainer.invite.already_declined': `Namespace "${invitee}" has declined this invite.`
     }[err.code]
     return response.error(
       msg || `Caught error inviting "${invitee}" to ${namespace}@${host}/${name}`,
@@ -106,11 +106,11 @@ async function remove(context, { namespace, host, name, invitee }) {
 
   if (err) {
     const msg = {
-      'invite.invitee_dne': `Unknown namespace: "${invitee}".`,
-      'invite.invitee_not_maintainer': `${invitee} was not a maintainer of ${namespace}@${host}/${name}.`
-      'invite.package_dne': `Unknown package: "${invitee}".`,
-      'invite.already_accepted': `Namespace "${invitee}" is already a member.`,
-      'invite.already_declined': `Namespace "${invitee}" has declined this invite.`
+      'maintainer.invite.invitee_dne': `Unknown namespace: "${invitee}".`,
+      'maintainer.invite.invitee_not_maintainer': `${invitee} was not a maintainer of ${namespace}@${host}/${name}.`
+      'maintainer.invite.package_dne': `Unknown package: "${invitee}".`,
+      'maintainer.invite.already_accepted': `Namespace "${invitee}" is already a member.`,
+      'maintainer.invite.already_declined': `Namespace "${invitee}" has declined this invite.`
     }[err.code]
 
     return response.error(
@@ -141,6 +141,20 @@ async function accept(context, { namespace, host, name, member }) {
     xs => [null, xs],
     xs => [xs, null]
   )
+
+  if (err) {
+    const msg = {
+      'maintainer.invite.invitee_dne': `Unknown namespace: "${invitee}".`,
+      'maintainer.invite.invitee_not_maintainer': `invitation not found.`,
+      'maintainer.invite.package_dne': `Unknown package: "${invitee}".`
+    }[err.code]
+
+    return response.error(
+      msg || `Caught error accepting invitation to ${namespace}@${host}/${name}`,
+      err.code
+    );
+  }
+
   context.logger.info(
     `${
       context.user.name
@@ -152,27 +166,29 @@ async function accept(context, { namespace, host, name, member }) {
 }
 
 async function decline(context, { namespace, host, name, member }) {
-  const invitation = await Maintainer.objects
-    .get({
-      namespace_id: context.member.id,
-      package_id: context.pkg.id,
-      active: true,
-      accepted: false
-    })
-    .catch(Maintainer.objects.NotFound, () => null);
+  const [err] = await context.storageApi.declineMaintainerInvite({
+    namespace,
+    host,
+    name,
+    member,
+    bearer: context.user.name
+  }).then(
+    xs => [null, xs],
+    xs => [xs, null]
+  )
 
-  if (!invitation) {
-    return response.error('invitation not found', 404);
+  if (err) {
+    const msg = {
+      'maintainer.invite.invitee_dne': `Unknown namespace: "${invitee}".`,
+      'maintainer.invite.invitee_not_maintainer': `invitation not found.`,
+      'maintainer.invite.package_dne': `Unknown package: "${invitee}".`
+    }[err.code]
+
+    return response.error(
+      msg || `Caught error declining invitation to ${namespace}@${host}/${name}`,
+      err.code
+    );
   }
-
-  await Maintainer.objects
-    .filter({
-      id: invitation.id
-    })
-    .update({
-      modified: new Date(),
-      active: false
-    });
 
   context.logger.info(
     `${
