@@ -3,7 +3,7 @@
 module.exports = makeRouter;
 
 const ship = require('culture-ships').random();
-const { fork } = require('boltzmann');
+const { fork, response } = require('boltzmann');
 
 function makeRouter() {
   const router = fork.router()(
@@ -20,4 +20,12 @@ async function ping() {
 }
 
 async function homepage() {
+  return response.html(`
+    <!doctype html>
+    <html>
+      <body>
+        <h1><marquee>WELCOME TO ENTROPIC</marquee></h1>
+      </body>
+    </html>
+  `)
 }

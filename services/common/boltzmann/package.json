@@ -7,7 +7,6 @@
     "url": "https://github.com/entropic-dev/entropic/issues"
   },
   "dependencies": {
-    "storage-api-client": "file:../storage-api-client",
     "are-we-dev": "~1.0.0",
     "bole": "~3.0.2",
     "find-my-way": "~2.0.1",
